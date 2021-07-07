@@ -14,8 +14,8 @@
 			transition: background-color 300ms ease, color 300ms ease;
 		}
 		*:focus {
-			outline: none;
 			background-color: rgba(221, 72, 20, .2);
+			outline: none;
 		}
 		html, body {
 			color: rgba(33, 37, 41, 1);
