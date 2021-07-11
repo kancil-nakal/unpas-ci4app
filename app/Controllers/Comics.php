@@ -33,7 +33,38 @@ class Comics extends BaseController
 			'title' => 'Detail Komik',
 			'comics' => $this->comicsModel->getComics($slug)
 		];
+
+		if(empty($data['comics'])) {
+			throw new \CodeIgniter\Exceptions\PageNotFoundException('Judul komik ' . $slug .  ' tidak ditemukan');
+		}
+
 		return view('comics/detail', $data);
+	}
+
+	public function create()
+	{
+		$data = [
+			'title' => 'Form Tambah Data'
+		];
+
+		return view('comics/create', $data);
+	}
+
+	public function save()
+	{
+		$slug = url_title($this->request->getVar('judul'), '-', true);
+
+		$this->comicsModel->save([
+			'judul' => $this->request->getVar('judul'),
+			'slug' => $slug,
+			'penulis' => $this->request->getVar('penulis'),
+			'penerbit' => $this->request->getVar('penerbit'),
+			'sampul' => $this->request->getVar('sampul')
+		]);
+
+		session()->setFlashdata('pesan', 'Data berhasil ditambahkan!');
+
+		return redirect()->to('/comics');
 	}
 
 
