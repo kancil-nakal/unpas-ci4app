@@ -14,17 +14,17 @@ class Comics extends BaseController
 	}
 
 	public function index()
-  {
+	{
 
 		// $comicsModel = new \App\Models\ComicsModel();
 		// $comics = $this->comicsModel->findAll();
 
 		$data = [
-      'title' => 'Data Comics',
+			'title' => 'Data Comics',
 			'comics' => $this->comicsModel->getComics()
 		];
 
-    return view('comics/index', $data);
+		return view('comics/index', $data);
 	}
 
 	public function detail($slug)
@@ -34,7 +34,7 @@ class Comics extends BaseController
 			'comics' => $this->comicsModel->getComics($slug)
 		];
 
-		if(empty($data['comics'])) {
+		if (empty($data['comics'])) {
 			throw new \CodeIgniter\Exceptions\PageNotFoundException('Judul komik ' . $slug .  ' tidak ditemukan');
 		}
 
@@ -44,7 +44,8 @@ class Comics extends BaseController
 	public function create()
 	{
 		$data = [
-			'title' => 'Form Tambah Data'
+			'title' => 'Form Tambah Data',
+			'validation' => \Config\Services::validation()
 		];
 
 		return view('comics/create', $data);
@@ -52,6 +53,20 @@ class Comics extends BaseController
 
 	public function save()
 	{
+		//validasi input
+		if (!$this->validate([
+			'judul' => [
+				'rules' => 'required|is_unique[comics.judul]',
+				'errors' => [
+					'required' => '{field} komik harus diisi.',
+					'is_unique' => '{field} komik sudah ada.'
+				]
+			]
+		])) {
+			$validation = \Config\Services::validation();
+			return redirect()->to('/comics/create')->withInput()->with('validation', $validation);
+		}
+
 		$slug = url_title($this->request->getVar('judul'), '-', true);
 
 		$this->comicsModel->save([
@@ -66,6 +81,4 @@ class Comics extends BaseController
 
 		return redirect()->to('/comics');
 	}
-
-
 }
