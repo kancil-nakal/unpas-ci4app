@@ -81,4 +81,52 @@ class Comics extends BaseController
 
 		return redirect()->to('/comics');
 	}
+
+	public function delete($id)
+	{
+		$this->comicsModel->delete($id);
+		session()->setFlashdata('pesan', 'Data berhasil dihapus!');
+		return redirect()->to('/comics');
+	}
+
+	public function edit($slug)
+	{
+		$data = [
+			'title' => 'Form Ubah Data',
+			'validation' => \Config\Services::validation(),
+			'comics' => $this->comicsModel->getComics($slug)
+		];
+
+		return view('comics/edit', $data);
+	}
+
+	public function update($id)
+	{
+		if (!$this->validate([
+			'judul' => [
+				'rules' => 'required|is_unique[comics.judul,id,' . $id . ']',
+				'errors' => [
+					'required' => '{field} komik harus diisi.',
+					'is_unique' => '{field} komik sudah ada.'
+				]
+			]
+		])) {
+			$validation = \Config\Services::validation();
+			return redirect()->to('/comics/edit')->withInput()->with('validation', $validation);
+		}
+		$slug = url_title($this->request->getVar('judul'), '-', true);
+
+		$this->comicsModel->save([
+			'id' => $id,
+			'judul' => $this->request->getVar('judul'),
+			'slug' => $slug,
+			'penulis' => $this->request->getVar('penulis'),
+			'penerbit' => $this->request->getVar('penerbit'),
+			'sampul' => $this->request->getVar('sampul')
+		]);
+
+		session()->setFlashdata('pesan', 'Data berhasil diubah!');
+
+		return redirect()->to('/comics');
+	}
 }
