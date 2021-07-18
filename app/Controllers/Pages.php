@@ -2,16 +2,17 @@
 
 namespace App\Controllers;
 
+
 class Pages extends BaseController
 {
-	public function index()
+
+  public function index()
   {
     $data = [
       'title' => 'Home | KancilNakal'
     ];
     return view('pages/home', $data);
-
-	}
+  }
 
   public function about()
   {
@@ -26,20 +27,18 @@ class Pages extends BaseController
     $data = [
       'title' => 'Contact',
       'alamat' => [
-          [
-            'tipe' => 'rumah',
-            'alamat' => 'Jl. terus',
-            'kota' => 'jakarta'
-          ],
-          [
-            'tipe' => 'kantor',
-            'alamat' => 'terus aja jalan',
-            'kota' => 'jaksel'
-          ]
+        [
+          'tipe' => 'rumah',
+          'alamat' => 'Jl. terus',
+          'kota' => 'jakarta'
+        ],
+        [
+          'tipe' => 'kantor',
+          'alamat' => 'terus aja jalan',
+          'kota' => 'jaksel'
+        ]
       ]
     ];
     return view('pages/contact', $data);
-
   }
-
 }
